@@ -1,0 +1,173 @@
+# Example MySQL config file for medium systems.
+#
+# This is for a system with little memory (32M - 64M) where MySQL plays
+# an important part, or systems up to 128M where MySQL is used together with
+# other programs (such as a web server)
+#
+# MySQL programs look for option files in a set of
+# locations which depend on the deployment platform.
+# You can copy this option file to one of those
+# locations. For information about these locations, see:
+# http://dev.mysql.com/doc/mysql/en/option-files.html
+#
+# In this file, you can use all long options that a program supports.
+# If you want to know which options a program supports, run the program
+# with the "--help" option.
+
+# The following options will be passed to all MySQL clients
+[client]
+#password   = your_password
+port        = 3306
+socket      = /tmp/mysql.sock
+
+# Here follows entries for some specific programs
+
+# The MySQL server
+[mysqld]
+report-port = 3306
+port = 3306
+report-host = 192.168.1.140
+pid-file = /tmp/mysql.pid
+socket = /tmp/mysql.sock
+basedir = /usr/local/mysql
+datadir = /data/mysql/var
+skip-external-locking
+max_connections = 1000
+key_buffer_size = 16M
+max_allowed_packet = 64M
+table_open_cache = 2048
+join_buffer_size = 8M
+sort_buffer_size = 8M
+net_buffer_length = 8K
+read_buffer_size = 8M
+read_rnd_buffer_size = 8M
+myisam_sort_buffer_size = 8M
+
+# Don't listen on a TCP/IP port at all. This can be a security enhancement,
+# if all processes that need to connect to mysqld run on the same host.
+# All interaction with mysqld must be made via Unix sockets or named pipes.
+# Note that using this option without enabling named pipes on Windows
+# (via the "enable-named-pipe" option) will render mysqld useless!
+#
+#skip-networking
+
+# Replication Master Server (default)
+# binary logging is required for replication
+log-bin = /var/log/mysql/master01
+binlog-do-db = db1
+binlog-do-db = db2
+binlog-do-db = db3
+binlog-ignore-db=mysql
+binlog-ignore-db=information_schema
+binlog-ignore-db=performance_schema
+relay-log=/var/log/mysql/relay_master01
+log-error=/var/log/mysql/error.log
+skip-name-resolve
+# binary logging format - mixed recommended
+binlog_format = ROW
+
+# required unique id between 1 and 2^32 - 1
+# defaults to 1 if master-host is not set
+# but will not function as a master if omitted
+server-id = 1
+
+
+binlog-cache-size = 4M
+max-binlog-size = 1G
+#max-binlog-cache-size = 2G
+sync-binlog = 1
+log-slave-updates = true
+gtid-mode = on
+slave_parallel_workers=4 
+enforce-gtid-consistency = true
+master-info-repository = TABLE
+relay-log-info-repository = TABLE
+sync-master-info = 1
+slave-parallel-workers = 2
+binlog-checksum = CRC32
+master-verify-checksum = 1
+slave-sql-verify-checksum = 1
+binlog-rows-query-log_events = 1
+
+log-bin-trust-function-creators = 1
+slow-query-log = 1
+long-query-time = 5
+slow-query-log-file = /var/log/mysql/slowquery.log
+log-queries-not-using-indexes = 1
+lower_case_table_names = 1
+#slave-skip-errors = 1062,1053
+#auto_increment_increment = 2
+#auto_increment_offset = 1
+
+#loose-innodb-trx=0
+#loose-innodb-locks=0
+#loose-innodb-lock-waits=0
+#loose-innodb-cmp=0
+#loose-innodb-cmp-per-index=0
+#loose-innodb-cmp-per-index-reset=0
+#loose-innodb-cmp-reset=0
+#loose-innodb-cmpmem=0
+#loose-innodb-cmpmem-reset=0
+#loose-innodb-buffer-page=0
+#loose-innodb-buffer-page-lru=0
+#loose-innodb-buffer-pool-stats=0
+#loose-innodb-metrics=0
+#loose-innodb-ft-default-stopword=0
+#loose-innodb-ft-inserted=0
+#loose-innodb-ft-deleted=0
+#loose-innodb-ft-being-deleted=0
+#loose-innodb-ft-config=0
+#loose-innodb-ft-index-cache=0
+#loose-innodb-ft-index-table=0
+#loose-innodb-sys-tables=0
+#loose-innodb-sys-tablestats=0
+#loose-innodb-sys-indexes=0
+#loose-innodb-sys-columns=0
+#loose-innodb-sys-fields=0
+#loose-innodb-sys-foreign=0
+#loose-innodb-sys-foreign-cols=0
+
+# Uncomment the following if you are using InnoDB tables
+innodb_data_home_dir = /data/mysql/var
+innodb_data_file_path = ibdata1:10M:autoextend
+innodb_log_group_home_dir = /data/mysql/var
+# You can set .._buffer_pool_size up to 50 - 80 %
+# of RAM but beware of setting memory usage too high
+innodb_buffer_pool_size = 2G 
+innodb_additional_mem_pool_size = 128M
+# Set .._log_file_size to 25 % of buffer pool size
+innodb_log_file_size = 1G
+innodb_log_buffer_size = 8M
+innodb_flush_log_at_trx_commit = 1
+innodb_lock_wait_timeout = 50
+innodb_flush_method = O_DIRECT
+innodb_flush_neighbors = 0
+innodb_file_per_table = 1
+
+#other
+character-set-server=utf8
+collation-server=utf8_general_ci
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+max-connect-errors=1000
+max-connections=1200
+transaction-isolation=read-committed
+event_scheduler = 1
+
+[mysqldump]
+quick
+max_allowed_packet = 64M
+
+[mysql]
+no-auto-rehash
+# Remove the next comment character if you are not familiar with SQL
+#safe-updates
+
+[myisamchk]
+key_buffer_size = 20M
+sort_buffer_size = 20M
+read_buffer = 2M
+write_buffer = 2M
+
+[mysqlhotcopy]
+interactive-timeout
+expire_logs_days = 10

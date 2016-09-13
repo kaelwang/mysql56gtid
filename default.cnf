@@ -1,0 +1,9 @@
+[config]
+smtp_host=smtp.163.com
+smtp_user=kael55@163.com
+smtp_password=Mysqltest55
+from=Server<kael55@163.com>
+to=DBA<kael55@163.com>
+host=192.168.1.179
+user=root
+password=123456
